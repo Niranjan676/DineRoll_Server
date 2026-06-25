@@ -41,8 +41,23 @@ const updateMaterial = (req, res)=>{
     })
 }
 
+const InactiveMaterial = (req, res)=>{
+    rawMaterial.deleteMaterial(req.params.id, req.body, (err, result)=>{
+        if(err){
+            console.log("Error", err)
+            res.status(500).json(err)
+        }else{
+            res.json({
+                message: "Material deleted successfully",
+                afectedRow : result.afectedRow
+            })
+        }
+    })
+}
+
 module.exports = {
     addMaterial,
     getMaterial,
-    updateMaterial
+    updateMaterial,
+    InactiveMaterial
 }
