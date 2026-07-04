@@ -19,7 +19,35 @@ const getCustomer = (callback)=>{
     db.query(query,callback)
 }
 
+const updateCustomer = (id, customerData, callback) =>{
+    const query = `UPDATE customer
+                        SET name = ?,
+                            phone = ?, 
+                            gst = ?,
+                            address =?,
+                            status = ?
+                        WHERE id = ?`
+    db.query(query, [
+                        customerData.name,
+                        customerData.phone,
+                        customerData.gst,
+                        customerData.address,
+                        customerData.status,
+                        id
+                    ], callback)
+}
+
+const inactiveCustomer = (id, customerData, callback)=>{
+    const query = `UPDATE customer
+                            SET status = "Inactive"
+                            WHERE id = ?`
+
+        db.query(query, [id], callback)
+}
+
 module.exports = {
     createCustomer,
-    getCustomer
+    getCustomer,
+    updateCustomer,
+    inactiveCustomer
 }
