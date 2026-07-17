@@ -9,47 +9,41 @@ const createOrder = (purchaseOrderData, callback)=>{
         })
         }
 
-        // const currentYear = new Date().getFullYear()
+        const currentYear = new Date().getFullYear()
 
-        // //Getting PO Number from trs_purchaseheader
-        // const getPoNumber = `SELECT ponumber FROM trs_purchaseheader
-        //                         ORDER BY id DESC
-        //                         LIMIT 1`
+        //Getting PO Number from trs_purchaseheader
+        const getPoNumber = `SELECT ponumber FROM trs_purchaseheader
+                                ORDER BY id DESC
+                                LIMIT 1`
 
-        //     db.query(getPoNumber, (err, result)=>{
-        //         if(err){
-        //            return db.rollback(()=>{
-        //                 return callback(err)
-        //             })
-        //         }
-        //     console.log(result)
+            db.query(getPoNumber, (err, result)=>{
+                if(err){
+                   return db.rollback(()=>{
+                        return callback(err)
+                    })
+                }
+            console.log(result)
 
-        //     let poNumber
+            let poNumber
                 
-        //     if(result.length === 0){
-        //         poNumber = `PO/${currentYear}/0001`
-        //         console.log(poNumber)
-        //     }else{
-        //         const lastPoNumber = result[0].ponumber
-        //         const parts = lastPoNumber.split("/") 
-        //         const lastYear = Number(parts[1])
-        //         const lastNumber = Number(parts[2])
+            if(result.length === 0){
+                poNumber = `PO/${currentYear}/0001`
+                console.log(poNumber)
+            }else{
+                const lastPoNumber = result[0].ponumber
+                const parts = lastPoNumber.split("/") 
+                const lastYear = Number(parts[1])
+                const lastNumber = Number(parts[2])
 
-        //         if(lastYear !==currentYear){
-        //             poNumber =`PO/${currentYear}/0001`
-        //         }else {
-        //             const nextPoNumber = lastNumber + 1
-        //             poNumber = `PO/${currentYear}/${String(nextPoNumber).padStart(4, "0")}`
-        //         }
-        //     }
-        //     console.log(poNumber)
-
-        getPoNumber((err, poNumber)=>{
-            if(err){
-                return db.rollback(()=>{
-                    return callback(err)
-                })
+                if(lastYear !==currentYear){
+                    poNumber =`PO/${currentYear}/0001`
+                }else {
+                    const nextPoNumber = lastNumber + 1
+                    poNumber = `PO/${currentYear}/${String(nextPoNumber).padStart(4, "0")}`
+                }
             }
+            console.log(poNumber)
+
         if(purchaseOrderData.detail.length === 0){
             return db.rollback(()=>{
                  return callback(new Error("Purchase order must contain at least one item"))
@@ -73,7 +67,7 @@ const createOrder = (purchaseOrderData, callback)=>{
                                     purchaseOrderData.header.paymentmode,
                                     purchaseOrderData.header.remarks
                                 ], 
-                                    (err, headerResult)=>{
+                                    (err, headerId)=>{
                             if(err){
                                 return db.rollback(()=>{
                                     return callback(err)
@@ -132,42 +126,6 @@ const createOrder = (purchaseOrderData, callback)=>{
             
         });                 
     })
-        })
   })
-}
-
-
-const getPoNumber = (callback)=>{
-    const currentYear = new Date().getFullYear()
-
-    const poNumberQuery =  `SELECT ponumber FROM trs_purchaseheader
-                                ORDER BY id DESC
-                                LIMIT 1`
-        db.query(poNumberQuery, (err, result)=>{
-            if(err){
-                return callback(err)
-            }
-        let poNumber
-        if(result.length === 0){
-            poNumber = `PO/${currentYear}/0001`
-        }else{
-            const lastPoNumber = result[0].ponumber;
-            const parts = lastPoNumber.split("/")
-            const lastYear = Number(parts[1])
-            const lastNumber = Number(parts[2])
-
-            if(lastYear !== currentYear){
-                poNumber = `PO/${currentYear}/0001`
-            }else{
-                const updatedNumber = lastNumber + 1
-                poNumber = `PO/${currentYear}/${String(updatedNumber).padStart(4, "0")}`
-            }
-        }
-            callback(null, poNumber)
-        })
-}
-
-module.exports = {
-    createOrder,
-    getPoNumber
+})
 }

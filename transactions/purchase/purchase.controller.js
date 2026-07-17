@@ -1,11 +1,8 @@
 const purchaseModel = require("./purchase.model")
 
 const createPurchaseOrder = (req, res)=>{
-    const purchaseData = {header: req.body.createPurchaseHeader,
-                          detail: req.body.createPurchaseDetail
-                         }
 
-        purchaseModel.createPurchase(purchaseData, (err, result)=>{
+        purchaseModel.createOrder(req.body, (err, result)=>{
             if(err){
                 res.status(500).json({
                     message: err.message
@@ -13,20 +10,33 @@ const createPurchaseOrder = (req, res)=>{
             }else{
                 res.status(200).json({
                     message:"Purchase order created success",
-                    purchaseId:result.purchaseId,
-                    ponumber: result.ponumber
+                    data: result
                 })
             }
         })
 
         console.log("Request Body:");
     console.log(req.body);
+}
 
-    console.log("Purchase Data:");
-    console.log(purchaseData);
+const getPoNumber = (req, res)=>{
+    purchaseModel.getPoNumber((err, result)=>{
+        if(err){
+            res.status(500).json({
+                message: "Internal server error",
+                err: err.message
+            })
+        }else{
+                res.status(200).json({
+                    message: "Po Number fetched success",
+                    poNumber: result
+                })
+            }
+    })
 }
 
 module.exports = {
-    createPurchaseOrder
+    createPurchaseOrder,
+    getPoNumber
 }
 
