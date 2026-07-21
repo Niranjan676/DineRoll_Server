@@ -1,12 +1,12 @@
 const db = require("../../db_config/db.js")
 
 const getAllSuppliers = (callback) =>{
-    const query = "SELECT * FROM supplier"
+    const query = "SELECT * FROM mst_supplier"
     db.query(query, callback)
 }
 
 const addSupplier = (supplierData, callback)=>{
-    const query = "INSERT INTO supplier(name, mobile, email, gst, person, address, status) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    const query = "INSERT INTO mst_supplier(name, mobile, email, gst, person, address, status) VALUES(?, ?, ?, ?, ?, ?, ?)";
     db.query(query, [supplierData.name, 
                    supplierData.mobile, 
                    supplierData.email, 
@@ -18,7 +18,7 @@ const addSupplier = (supplierData, callback)=>{
 }
 
 const updateSupplier = (id, supplierData, callback)=>{
-    const query = `UPDATE supplier 
+    const query = `UPDATE mst_supplier 
                     SET name = ?,
                         mobile = ?,
                         email = ?,
@@ -39,13 +39,13 @@ const updateSupplier = (id, supplierData, callback)=>{
 }
 
 const deleteSupplier = (id, callback) =>{
-    const query =  `DELETE FROM supplier WHERE id = ?`
+    const query =  `DELETE FROM mst_supplier WHERE id = ?`
 
     db.query(query, [id], callback)
 }
 
 const inactiveSupplier = (id, callback)=>{
-    const query = `UPDATE supplier SET status = "Inactive" WHERE id = ?`
+    const query = `UPDATE mst_supplier SET status = "Inactive" WHERE id = ?`
 
     db.query(query, [id], callback)
 }

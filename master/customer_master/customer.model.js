@@ -2,7 +2,7 @@ const db = require("../../db_config/db.js")
 
 
 const createCustomer = (customerData, callback)=>{
-    const query = `INSERT INTO customer(name, phone, gst, address, status)
+    const query = `INSERT INTO mst_customer(name, phone, gst, address, status)
                         VALUES(?, ?, ?, ?, ?)`
     db.query(query, 
                 [customerData.name, 
@@ -14,13 +14,13 @@ const createCustomer = (customerData, callback)=>{
 }
 
 const getCustomer = (callback)=>{
-    const query = `SELECT * FROM customer`
+    const query = `SELECT * FROM mst_customer`
 
     db.query(query,callback)
 }
 
 const updateCustomer = (id, customerData, callback) =>{
-    const query = `UPDATE customer
+    const query = `UPDATE mst_customer
                         SET name = ?,
                             phone = ?, 
                             gst = ?,
@@ -38,7 +38,7 @@ const updateCustomer = (id, customerData, callback) =>{
 }
 
 const inactiveCustomer = (id, customerData, callback)=>{
-    const query = `UPDATE customer
+    const query = `UPDATE mst_customer
                             SET status = "Inactive"
                             WHERE id = ?`
 

@@ -108,6 +108,7 @@ const createOrder = (purchaseOrderData, callback)=>{
                                     element.amount
                                 ], (err)=>{
                                     if(err){
+                                        console.error("Detail insert error:", err)
                                         return db.rollback(()=>{
                                             return callback(err)
                                         })
