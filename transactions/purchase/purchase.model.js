@@ -168,7 +168,14 @@ const getPoNumber = (callback)=>{
         })
 }
 
+const getPoOrderList = (callback)=>{
+    const orderListQuery = `SELECT id, ponumber, DATE_FORMAT(podate, "%d-%M-%Y") AS podate, suppliername, phone FROM trs_purchaseheader`
+
+    db.query(orderListQuery, callback)
+}
+
 module.exports = {
     createOrder,
-    getPoNumber
+    getPoNumber,
+    getPoOrderList
 }

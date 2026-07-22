@@ -35,8 +35,24 @@ const getPoNumber = (req, res)=>{
     })
 }
 
+const getPoOrderList = (req, res)=>{
+    purchaseModel.getPoOrderList((err, result)=>{
+        if(err){
+            res.status(500).json({
+                message: err.message
+            })
+        }else{
+            res.status(200).json({
+                message: "PO Order List Fetched Successfully",
+                result
+            })
+        }
+    })
+}
+
 module.exports = {
     createPurchaseOrder,
-    getPoNumber
+    getPoNumber,
+    getPoOrderList
 }
 
