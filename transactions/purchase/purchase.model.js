@@ -169,13 +169,34 @@ const getPoNumber = (callback)=>{
 }
 
 const getPoOrderList = (callback)=>{
-    const orderListQuery = `SELECT id, ponumber, DATE_FORMAT(podate, "%d-%M-%Y") AS podate, suppliername, phone FROM trs_purchaseheader`
+    const orderQuery = `SELECT id, ponumber, DATE_FORMAT(podate, "%d-%M-%Y") AS podate, suppliername, contactperson, phone, paymentmode FROM trs_purchaseheader`
 
-    db.query(orderListQuery, callback)
+    db.query(orderQuery,callback)
+}
+
+const getSelectedPoOrder = (id, callback)=>{
+    const header = `SELECT * FROM trs_purchaseheader WHERE id = ?`
+    
+    db.query(header, [id], (err, headerresult)=>{
+        if(err){
+            return callback(err)
+        }
+    
+    const detail = `SELECT * FROM trs_purchasedetail WHERE purchaseheader_id = ?`
+
+        db.query(detail, [id], (err, detailresult)=>{
+            if(err){
+                return callback(err)
+            }
+
+            callback(null, {header: headerresult[0], detail: detailresult})
+        })
+    })
 }
 
 module.exports = {
     createOrder,
     getPoNumber,
-    getPoOrderList
+    getPoOrderList,
+    getSelectedPoOrder
 }

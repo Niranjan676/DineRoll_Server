@@ -39,12 +39,29 @@ const getPoOrderList = (req, res)=>{
     purchaseModel.getPoOrderList((err, result)=>{
         if(err){
             res.status(500).json({
+                message: err.message,
+            })
+        }else{
+            res.status(200).json({
+                message: "PO list fetched success",
+                result
+            })
+        }
+    })
+}
+
+const getSelectedOrderList = (req, res)=>{
+
+    const id = req.params.id
+    purchaseModel.getSelectedPoOrder(id, (err, result)=>{
+        if(err){
+            res.status(500).json({
                 message: err.message
             })
         }else{
             res.status(200).json({
                 message: "PO Order List Fetched Successfully",
-                result
+                result: result
             })
         }
     })
@@ -53,6 +70,7 @@ const getPoOrderList = (req, res)=>{
 module.exports = {
     createPurchaseOrder,
     getPoNumber,
-    getPoOrderList
+    getPoOrderList,
+    getSelectedOrderList
 }
 
