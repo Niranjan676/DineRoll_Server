@@ -175,7 +175,7 @@ const getPoOrderList = (callback)=>{
 }
 
 const getSelectedPoOrder = (id, callback)=>{
-    const header = `SELECT * FROM trs_purchaseheader WHERE id = ?`
+    const header = `SELECT id, ponumber, DATE_FORMAT(podate, "%d-%M-%Y") AS podate, suppliername, contactperson, phone, paymentmode FROM trs_purchaseheader WHERE id = ?`
     
     db.query(header, [id], (err, headerresult)=>{
         if(err){
