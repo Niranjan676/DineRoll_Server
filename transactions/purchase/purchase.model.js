@@ -194,9 +194,98 @@ const getSelectedPoOrder = (id, callback)=>{
     })
 }
 
+// Update PO Query
+
+const updatePo = (id, updatedpodata, callback)=>{
+    db.beginTransaction((err)=>{
+        if(err){
+            console.log(err)
+            return db.rollback(()=> callback(err))
+        }
+
+    const podate = updatedpodata.header.podate.split("T")[0]
+    const updateHeaderQuery = `UPDATE trs_purchaseheader 
+                                    SET ponumber = ?,
+                                        podate = ?,
+                                        suppliername = ?,
+                                        contactperson = ?,
+                                        phone = ?,
+                                        paymentmode = ?
+                                    WHERE id = ?`
+        
+        db.query(updateHeaderQuery, [
+                                      updatedpodata.header.ponumber,
+                                      podate,
+                                      updatedpodata.header.suppliername,
+                                      updatedpodata.header.contactperson,
+                                      updatedpodata.header.phone,
+                                      updatedpodata.header.paymentmode,
+                                      id], (err, headerresult)=>{
+                                        if(err){
+                                            console.log("Header error: ", err)
+                                            return db.rollback(()=>callback(err))
+                                        }
+                                    console.log(updatedpodata.detail)
+
+            if(updatedpodata.detail.length === 0){
+                return db.rollback(()=>{
+                    callback(new Error("Please select atleaset one item"))
+                })
+            }
+
+            let completed = 0;
+
+            updatedpodata.detail.forEach((updateitem)=>{
+
+                const updatedDetailQuery = `UPDATE trs_purchasedetail
+                                                SET itemcode = ?,
+                                                    itemname = ?,
+                                                    gsm = ?,
+                                                    quantity = ?,
+                                                    unit = ?,
+                                                    rate = ?,
+                                                    amount = ?
+                                                WHERE id = ?`
+                    db.query(updatedDetailQuery, [
+                                                  updateitem.itemcode,
+                                                  updateitem.itemname,
+                                                  updateitem.gsm,
+                                                  updateitem.quantity,
+                                                  updateitem.unit,
+                                                  updateitem.rate,
+                                                  updateitem.amount,
+                                                  updateitem.id ], (err, detailresult)=>{
+                                                    if(err){
+                                                        return db.rollback(()=>callback(err))
+                                                    }
+                        console.log("Purchase detail saved success")
+
+                        completed ++;
+
+                        if(completed === updatedpodata.detail.length){
+                            db.commit((err)=>{
+                            console.log("Detail error: ", err)
+                            if(err){
+                                return db.rollback(()=>{
+                                    callback(err)
+                                })
+                            }
+                            callback(null, {
+                                message: "PO updated successfully"
+                            })
+                        })
+                        }
+
+                                                  })
+            })
+                                      })
+    })
+}
+
 module.exports = {
     createOrder,
     getPoNumber,
     getPoOrderList,
-    getSelectedPoOrder
+    getSelectedPoOrder,
+    updatePo
 }
