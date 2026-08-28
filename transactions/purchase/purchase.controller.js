@@ -67,10 +67,29 @@ const getSelectedOrderList = (req, res)=>{
     })
 }
 
+const updatePo = (req, res) =>{
+    console.log("Params:", req.params);
+    console.log("Body:", req.body);
+    const id = req.params.id
+    purchaseModel.updatePo(id, req.body, (err, result)=>{
+        if(err){
+            res.status(500).json({
+                message: err.message
+            })
+        }else{
+            res.status(200).json({
+                message: "PO updated successfully",
+                result
+            })
+        }
+    })
+}
+
 module.exports = {
     createPurchaseOrder,
     getPoNumber,
     getPoOrderList,
-    getSelectedOrderList
+    getSelectedOrderList,
+    updatePo
 }
 
